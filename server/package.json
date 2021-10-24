@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "sequelize-auto": "sequelize-auto -o \"./models\" -d post_pern -h localhost -u postgres -p 5000 -x admin -e postgres"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,9 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.7.0",
+    "sequelize-auto": "^0.8.5",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
