@@ -2,10 +2,14 @@ require('dotenv').config()
 
 const express = require('express');
 const cors = require('cors');
+
+const authRouter = require('./routes/authorizationRouter');
 const router = require('./routes/index');
 
 const {sequelize} = require('./models')
 // const initModels = require("./models/init-models");
+
+const authMiddleware = require('./middleware/authMiddleware')
 
 const app = express()
 
@@ -15,7 +19,8 @@ app.use(cors())
 //чтобы парсить json формат
 app.use(express.json())
 
-app.use('/', router)
+app.use('/auth', authRouter)
+app.use('/', authMiddleware, router)
 
 const start = async () => {
     try {
