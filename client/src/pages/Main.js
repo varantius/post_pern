@@ -1,11 +1,13 @@
-import React, { useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {API} from '../http/index'
 import axios from "axios";
+import {Context} from "../index";
 
 const Main = () => {
     const [loadingStatus, setLoadingStatus] = useState(false)
     const [axiosValue, setAxiosValue] = useState([])
     const [axiosFetchValue, setAxiosFetchValue] = useState([])
+    const {user} = useContext(Context)
 
     async function axiosData() {
         await axios.get('https://jsonplaceholder.typicode.com/todos', {
@@ -42,6 +44,10 @@ const Main = () => {
         setLoadingStatus(false)
     }
 
+    const logout = () =>{
+        user.setUser({})
+        user.setIsAuth(false)
+    }
     useEffect(() => {
         allData()
     },[]);
@@ -53,6 +59,7 @@ const Main = () => {
                     <p>Loading... </p>
                 ) : (
                     <React.Fragment>
+                        <button onClick={() => logout()}>Log out</button>
                         <div style={{width: '50%', float: 'left'}}>
                             <h1>Axios</h1>
                             {

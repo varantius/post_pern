@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
 
 module.exports = function(req, res, next){
+
+
     if (req.method === "OPTIONS"){
         next()
     }
@@ -13,6 +15,9 @@ module.exports = function(req, res, next){
 
         const decoded = jwt.verify(token, "supertest")
         req.user = decoded
+        console.log("auth middleware")
+        console.log(req.user)
+        console.log("-----------------")
         next()
     }catch (e) {
         return res.status(401).json({message: "Unauthorized"})

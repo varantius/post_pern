@@ -14,7 +14,6 @@ router.post('/registration', [
         }),
     ], AuthController.registration)
 router.post('/login', [
-    check('name', "Cannot be empty").notEmpty(),
     check('email', "Email cannot be empty").isEmail(),
     check('password', "Password should memore than 4 symbols and less that 10 symbols").isLength({
         min: 4, max: 10

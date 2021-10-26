@@ -7,9 +7,9 @@ const User = sequelize.models.users
 const {validationResult} = require('express-validator')
 
 
-const generateJwt = (id, name, email) =>{
+const generateJwt = (id, email) =>{
     return jwt.sign(
-        {id, name, email},
+        {id, email},
         "supertest",
         {expiresIn: "24h"}
     )
@@ -40,7 +40,7 @@ class AuthController {
 
             const hashPassword = await bcrypt.hash(password, 5)
             const user = await User.create({name, email, password: hashPassword})
-            const token = generateJwt(user.id, name, email)
+            const token = generateJwt(user.user_id, email)
 
             return res.json({token})
 
@@ -56,7 +56,7 @@ class AuthController {
                 return res.status(400).json({message: "Auth error", errors})
             }
 
-            const {name, email, password } = req.body
+            const { email, password } = req.body
             const user = await User.findOne({where:{email}})
             if(!user) {
                 return res.status(404).json({message: "User does not found"})
@@ -66,7 +66,8 @@ class AuthController {
             if(!comparePassword){
                 return res.status(404).json({message: "Password does not match"})
             }
-            const token = generateJwt(user.id, name, email)
+            console.log(user.user_id)
+            const token = generateJwt(user.user_id,  email)
             return res.json({token})
 
         } catch (e) {
@@ -75,7 +76,13 @@ class AuthController {
     }
 
     async check(req, res, next){
-        res.json({message: "ALL RIGHT"})
+        // console.log("Backend check")
+        // console.log(req.user)
+        // console.log(req.user.user_id)
+        const token = generateJwt(req.user.user_id,  req.email)
+        // console.log(token)
+        // console.log({token})
+        return res.json({token})
     }
 }
 

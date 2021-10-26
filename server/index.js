@@ -20,7 +20,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/auth', authRouter)
-app.use('/', authMiddleware, router)
+app.use('/',  router)
 
 const start = async () => {
     try {
