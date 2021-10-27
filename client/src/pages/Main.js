@@ -2,12 +2,19 @@ import React, {useContext, useEffect, useState} from 'react';
 import {API} from '../http/index'
 import axios from "axios";
 import {Context} from "../index";
+import {Link, useHistory} from "react-router-dom";
+import {getAllUsers} from "../http/userAPI";
+import {observer} from "mobx-react-lite";
 
-const Main = () => {
+const Main = observer( () => {
     const [loadingStatus, setLoadingStatus] = useState(false)
     const [axiosValue, setAxiosValue] = useState([])
     const [axiosFetchValue, setAxiosFetchValue] = useState([])
     const {user} = useContext(Context)
+
+    const {users} = useContext(Context)
+
+    const  history = useHistory()
 
     async function axiosData() {
         await axios.get('https://jsonplaceholder.typicode.com/todos', {
@@ -21,14 +28,23 @@ const Main = () => {
         })
     }
 
-    async function fetchData() {
+     function fetchData() {
         try {
-            await API.get('/users')
-                .then(res => {
-                    setAxiosFetchValue(res.data)
-                }).then(res => {
-                    // console.log(axiosFetchValue)
-                })
+
+            // console.log(users)
+             getAllUsers().then((data) => {
+                users.setUsers(data)
+            })
+
+
+            // console.log('-------------')
+            // console.log({users})
+            // console.log('-------------')
+            // await API.get('/users')
+            //     .then(res => {
+            //         console.log(res)
+            //         setAxiosFetchValue(res.data)
+            //     })
 
         } catch (e) {
             console.log(e)
@@ -40,14 +56,16 @@ const Main = () => {
         // await axiosData().then( async() => await fetchData())
         setLoadingStatus(true)
         await axiosData()
-        await fetchData()
+        fetchData()
         setLoadingStatus(false)
     }
 
     const logout = () =>{
         user.setUser({})
         user.setIsAuth(false)
+        history.push('/auth')
     }
+
     useEffect(() => {
         allData()
     },[]);
@@ -71,20 +89,33 @@ const Main = () => {
                         </div>
                         <div style={{width: '50%', float: 'left'}}>
                         <h1>Axios fetch</h1>
-                        {
-                            axiosFetchValue.map((user, index) => (
-                                    <p key={index}>{user.name}</p>
-                                )
-                            )
-
-                        }
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>USER NAME</th>
+                                    <th>USER EMAIL</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        users.getUsers.map(u => (
+                                                <tr key={u.user_id}>
+                                                    <td>{u.user_id}</td>
+                                                    <td>{u.name}</td>
+                                                    <td>{u.email}</td>
+                                                </tr>
+                                            )
+                                        )
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                     </React.Fragment>
                 )
             }
-
         </div>
     );
-};
+});
 
 export default Main;

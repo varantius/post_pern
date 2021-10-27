@@ -28,3 +28,14 @@ export const check = async() => {
     localStorage.setItem('token', data.token)
     return jwtDecode(data.token)
 }
+
+
+export const getAllUsers = async () => {
+    const {data} =  await $host.get('/users')
+    return data
+}
+
+export const getOneUser = async (id) => {
+    const {data} =  await $host.get('/users/' + id)
+    return data
+}
